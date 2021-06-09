@@ -2,8 +2,8 @@
   "name": "3o2q0rq-czy7klf",
   "arn": "arn:aws:iam::236080091672:role/3o2q0rq-czy7klf",
   "service": [
-    "lambda.amazonaws.com",
-    "edgelambda.amazonaws.com"
+    "edgelambda.amazonaws.com",
+    "lambda.amazonaws.com"
   ],
   "policy": {
     "Version": "2012-10-17",
