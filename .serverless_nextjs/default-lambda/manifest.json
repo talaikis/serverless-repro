@@ -1,0 +1,1 @@
+{"buildId":"OMf0r6C4Bm0_gSt3Abkqh","logLambdaExecutionTimes":false,"pages":{"ssr":{"dynamic":{},"catchAll":{},"nonDynamic":{"/test":"pages/test.js","/_error":"pages/_error.js"}},"html":{"dynamic":{},"nonDynamic":{"/404":"pages/404.html"}},"ssg":{"dynamic":{},"nonDynamic":{}}},"publicFiles":{},"trailingSlash":false,"domainRedirects":{},"enableHTTPCompression":false}

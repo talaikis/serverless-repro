@@ -1,0 +1,14 @@
+name: front-test
+
+TestApplication:
+  component: "@sls-next/serverless-component@1.19.0"
+  inputs:
+    region: eu-west-2
+    memory: 1024
+    publicDirectoryCache: true
+    logLambdaExecutionTimes: false
+    runtime: "nodejs14.x"
+    timeout: 10
+    bucketRegion: eu-west-2
+    minifyHandlers: true
+    verbose: false
