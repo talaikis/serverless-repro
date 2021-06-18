@@ -1,4 +1,5 @@
 {
+  "/": "pages/index.html",
   "/test/test": "pages/test/test.js",
   "/_error": "pages/_error.js",
   "/404": "pages/404.html"

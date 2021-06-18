@@ -9570,180 +9570,7 @@ if (typeof Object.create === 'function') {
 
 /***/ }),
 
-/***/ 4332:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-exports.__esModule=true;exports.wait=wait;exports.error=error;exports.warn=warn;exports.ready=ready;exports.info=info;exports.event=event;exports.prefixes=void 0;var _chalk=_interopRequireDefault(__webpack_require__(2589));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}const prefixes={wait:_chalk.default.cyan('wait')+'  -',error:_chalk.default.red('error')+' -',warn:_chalk.default.yellow('warn')+'  -',ready:_chalk.default.green('ready')+' -',info:_chalk.default.cyan('info')+'  -',event:_chalk.default.magenta('event')+' -'};exports.prefixes=prefixes;function wait(...message){console.log(prefixes.wait,...message);}function error(...message){console.error(prefixes.error,...message);}function warn(...message){console.warn(prefixes.warn,...message);}function ready(...message){console.log(prefixes.ready,...message);}function info(...message){console.log(prefixes.info,...message);}function event(...message){console.log(prefixes.event,...message);}
-//# sourceMappingURL=log.js.map
-
-/***/ }),
-
-/***/ 1297:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(5318);
-
-exports.__esModule = true;
-exports.initScriptLoader = initScriptLoader;
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(__webpack_require__(7154));
-
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(7316));
-
-var _react = __webpack_require__(7294);
-
-var _headManagerContext = __webpack_require__(4287);
-
-var _headManager = __webpack_require__(2771);
-
-var _requestIdleCallback = __webpack_require__(8391);
-
-const ScriptCache = new Map();
-const LoadCache = new Set();
-const ignoreProps = ['onLoad', 'dangerouslySetInnerHTML', 'children', 'onError', 'strategy'];
-
-const loadScript = props => {
-  const {
-    src,
-    id,
-    onLoad = () => {},
-    dangerouslySetInnerHTML,
-    children = '',
-    onError
-  } = props;
-  const cacheKey = id || src;
-
-  if (ScriptCache.has(src)) {
-    if (!LoadCache.has(cacheKey)) {
-      LoadCache.add(cacheKey); // Execute onLoad since the script loading has begun
-
-      ScriptCache.get(src).then(onLoad, onError);
-    }
-
-    return;
-  }
-
-  const el = document.createElement('script');
-  const loadPromise = new Promise((resolve, reject) => {
-    el.addEventListener('load', function () {
-      resolve();
-
-      if (onLoad) {
-        onLoad.call(this);
-      }
-    });
-    el.addEventListener('error', function () {
-      reject();
-
-      if (onError) {
-        onError();
-      }
-    });
-  });
-
-  if (src) {
-    ScriptCache.set(src, loadPromise);
-    LoadCache.add(cacheKey);
-  }
-
-  if (dangerouslySetInnerHTML) {
-    el.innerHTML = dangerouslySetInnerHTML.__html || '';
-  } else if (children) {
-    el.textContent = typeof children === 'string' ? children : Array.isArray(children) ? children.join('') : '';
-  } else if (src) {
-    el.src = src;
-  }
-
-  for (const [k, value] of Object.entries(props)) {
-    if (value === undefined || ignoreProps.includes(k)) {
-      continue;
-    }
-
-    const attr = _headManager.DOMAttributeNames[k] || k.toLowerCase();
-    el.setAttribute(attr, value);
-  }
-
-  document.body.appendChild(el);
-};
-
-function handleClientScriptLoad(props) {
-  const {
-    strategy = 'afterInteractive'
-  } = props;
-
-  if (strategy === 'afterInteractive') {
-    loadScript(props);
-  } else if (strategy === 'lazyOnload') {
-    window.addEventListener('load', () => {
-      (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
-    });
-  }
-}
-
-function loadLazyScript(props) {
-  if (document.readyState === 'complete') {
-    (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
-  } else {
-    window.addEventListener('load', () => {
-      (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
-    });
-  }
-}
-
-function initScriptLoader(scriptLoaderItems) {
-  scriptLoaderItems.forEach(handleClientScriptLoad);
-}
-
-function Script(props) {
-  const {
-    src = '',
-    onLoad = () => {},
-    strategy = 'afterInteractive',
-    onError
-  } = props,
-        restProps = (0, _objectWithoutPropertiesLoose2.default)(props, ["src", "onLoad", "dangerouslySetInnerHTML", "strategy", "onError"]); // Context is available only during SSR
-
-  const {
-    updateScripts,
-    scripts
-  } = (0, _react.useContext)(_headManagerContext.HeadManagerContext);
-  (0, _react.useEffect)(() => {
-    if (strategy === 'afterInteractive') {
-      loadScript(props);
-    } else if (strategy === 'lazyOnload') {
-      loadLazyScript(props);
-    }
-  }, [props, strategy]);
-
-  if (true) {
-    return null;
-  }
-
-  if (strategy === 'beforeInteractive') {
-    if (updateScripts) {
-      scripts.beforeInteractive = (scripts.beforeInteractive || []).concat([(0, _extends2.default)({
-        src,
-        onLoad,
-        onError
-      }, restProps)]);
-      updateScripts(scripts);
-    }
-  }
-
-  return null;
-}
-
-var _default = Script;
-exports.default = _default;
-
-/***/ }),
-
-/***/ 2771:
+/***/ 6792:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -9870,7 +9697,7 @@ function initHeadManager() {
 
 /***/ }),
 
-/***/ 8391:
+/***/ 3447:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -9901,7 +9728,167 @@ exports.cancelIdleCallback = cancelIdleCallback;
 
 /***/ }),
 
-/***/ 3367:
+/***/ 7926:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(5318);
+
+exports.__esModule = true;
+exports.initScriptLoader = initScriptLoader;
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(__webpack_require__(7154));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(7316));
+
+var _react = __webpack_require__(7294);
+
+var _headManagerContext = __webpack_require__(1165);
+
+var _headManager = __webpack_require__(6792);
+
+var _requestIdleCallback = __webpack_require__(3447);
+
+const ScriptCache = new Map();
+const LoadCache = new Set();
+const ignoreProps = ['onLoad', 'dangerouslySetInnerHTML', 'children', 'onError', 'strategy'];
+
+const loadScript = props => {
+  const {
+    src,
+    id,
+    onLoad = () => {},
+    dangerouslySetInnerHTML,
+    children = '',
+    onError
+  } = props;
+  const cacheKey = id || src;
+
+  if (ScriptCache.has(src)) {
+    if (!LoadCache.has(cacheKey)) {
+      LoadCache.add(cacheKey); // Execute onLoad since the script loading has begun
+
+      ScriptCache.get(src).then(onLoad, onError);
+    }
+
+    return;
+  }
+
+  const el = document.createElement('script');
+  const loadPromise = new Promise((resolve, reject) => {
+    el.addEventListener('load', function () {
+      resolve();
+
+      if (onLoad) {
+        onLoad.call(this);
+      }
+    });
+    el.addEventListener('error', function () {
+      reject();
+
+      if (onError) {
+        onError();
+      }
+    });
+  });
+
+  if (src) {
+    ScriptCache.set(src, loadPromise);
+    LoadCache.add(cacheKey);
+  }
+
+  if (dangerouslySetInnerHTML) {
+    el.innerHTML = dangerouslySetInnerHTML.__html || '';
+  } else if (children) {
+    el.textContent = typeof children === 'string' ? children : Array.isArray(children) ? children.join('') : '';
+  } else if (src) {
+    el.src = src;
+  }
+
+  for (const [k, value] of Object.entries(props)) {
+    if (value === undefined || ignoreProps.includes(k)) {
+      continue;
+    }
+
+    const attr = _headManager.DOMAttributeNames[k] || k.toLowerCase();
+    el.setAttribute(attr, value);
+  }
+
+  document.body.appendChild(el);
+};
+
+function handleClientScriptLoad(props) {
+  const {
+    strategy = 'afterInteractive'
+  } = props;
+
+  if (strategy === 'afterInteractive') {
+    loadScript(props);
+  } else if (strategy === 'lazyOnload') {
+    window.addEventListener('load', () => {
+      (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
+    });
+  }
+}
+
+function loadLazyScript(props) {
+  if (document.readyState === 'complete') {
+    (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
+  } else {
+    window.addEventListener('load', () => {
+      (0, _requestIdleCallback.requestIdleCallback)(() => loadScript(props));
+    });
+  }
+}
+
+function initScriptLoader(scriptLoaderItems) {
+  scriptLoaderItems.forEach(handleClientScriptLoad);
+}
+
+function Script(props) {
+  const {
+    src = '',
+    onLoad = () => {},
+    strategy = 'afterInteractive',
+    onError
+  } = props,
+        restProps = (0, _objectWithoutPropertiesLoose2.default)(props, ["src", "onLoad", "dangerouslySetInnerHTML", "strategy", "onError"]); // Context is available only during SSR
+
+  const {
+    updateScripts,
+    scripts
+  } = (0, _react.useContext)(_headManagerContext.HeadManagerContext);
+  (0, _react.useEffect)(() => {
+    if (strategy === 'afterInteractive') {
+      loadScript(props);
+    } else if (strategy === 'lazyOnload') {
+      loadLazyScript(props);
+    }
+  }, [props, strategy]);
+
+  if (strategy === 'beforeInteractive') {
+    if (updateScripts) {
+      scripts.beforeInteractive = (scripts.beforeInteractive || []).concat([(0, _extends2.default)({
+        src,
+        onLoad,
+        onError
+      }, restProps)]);
+      updateScripts(scripts);
+    }
+  }
+
+  return null;
+}
+
+var _default = Script;
+exports.default = _default;
+
+/***/ }),
+
+/***/ 3398:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -9926,7 +9913,7 @@ if (false) {}
 
 /***/ }),
 
-/***/ 7845:
+/***/ 6393:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -9938,7 +9925,7 @@ exports.useAmp = useAmp;
 
 var _react = _interopRequireDefault(__webpack_require__(7294));
 
-var _ampContext = __webpack_require__(3367);
+var _ampContext = __webpack_require__(3398);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -9961,14 +9948,14 @@ function useAmp() {
 
 /***/ }),
 
-/***/ 7007:
+/***/ 6885:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
 
 exports.__esModule = true;
-exports.STATIC_STATUS_PAGES = exports.OPTIMIZED_FONT_PROVIDERS = exports.SERVER_PROPS_ID = exports.STATIC_PROPS_ID = exports.PERMANENT_REDIRECT_STATUS = exports.TEMPORARY_REDIRECT_STATUS = exports.CLIENT_STATIC_FILES_RUNTIME_POLYFILLS = exports.CLIENT_STATIC_FILES_RUNTIME_WEBPACK = exports.CLIENT_STATIC_FILES_RUNTIME_AMP = exports.CLIENT_STATIC_FILES_RUNTIME_REACT_REFRESH = exports.CLIENT_STATIC_FILES_RUNTIME_MAIN = exports.STRING_LITERAL_DROP_BUNDLE = exports.AMP_RENDER_TARGET = exports.CLIENT_STATIC_FILES_RUNTIME = exports.CLIENT_STATIC_FILES_PATH = exports.CLIENT_PUBLIC_FILES_PATH = exports.BLOCKED_PAGES = exports.BUILD_ID_FILE = exports.CONFIG_FILE = exports.SERVERLESS_DIRECTORY = exports.SERVER_DIRECTORY = exports.FONT_MANIFEST = exports.REACT_LOADABLE_MANIFEST = exports.DEV_CLIENT_PAGES_MANIFEST = exports.SERVER_FILES_MANIFEST = exports.IMAGES_MANIFEST = exports.ROUTES_MANIFEST = exports.PRERENDER_MANIFEST = exports.EXPORT_DETAIL = exports.EXPORT_MARKER = exports.BUILD_MANIFEST = exports.PAGES_MANIFEST = exports.PHASE_DEVELOPMENT_SERVER = exports.PHASE_PRODUCTION_SERVER = exports.PHASE_PRODUCTION_BUILD = exports.PHASE_EXPORT = void 0;
+exports.STATIC_STATUS_PAGES = exports.OPTIMIZED_FONT_PROVIDERS = exports.GOOGLE_FONT_PROVIDER = exports.SERVER_PROPS_ID = exports.STATIC_PROPS_ID = exports.PERMANENT_REDIRECT_STATUS = exports.TEMPORARY_REDIRECT_STATUS = exports.CLIENT_STATIC_FILES_RUNTIME_POLYFILLS = exports.CLIENT_STATIC_FILES_RUNTIME_WEBPACK = exports.CLIENT_STATIC_FILES_RUNTIME_AMP = exports.CLIENT_STATIC_FILES_RUNTIME_REACT_REFRESH = exports.CLIENT_STATIC_FILES_RUNTIME_MAIN = exports.STRING_LITERAL_DROP_BUNDLE = exports.AMP_RENDER_TARGET = exports.CLIENT_STATIC_FILES_RUNTIME = exports.CLIENT_STATIC_FILES_PATH = exports.CLIENT_PUBLIC_FILES_PATH = exports.BLOCKED_PAGES = exports.BUILD_ID_FILE = exports.CONFIG_FILE = exports.SERVERLESS_DIRECTORY = exports.SERVER_DIRECTORY = exports.FONT_MANIFEST = exports.REACT_LOADABLE_MANIFEST = exports.DEV_CLIENT_PAGES_MANIFEST = exports.SERVER_FILES_MANIFEST = exports.IMAGES_MANIFEST = exports.ROUTES_MANIFEST = exports.PRERENDER_MANIFEST = exports.EXPORT_DETAIL = exports.EXPORT_MARKER = exports.BUILD_MANIFEST = exports.PAGES_MANIFEST = exports.PHASE_DEVELOPMENT_SERVER = exports.PHASE_PRODUCTION_SERVER = exports.PHASE_PRODUCTION_BUILD = exports.PHASE_EXPORT = void 0;
 const PHASE_EXPORT = 'phase-export';
 exports.PHASE_EXPORT = PHASE_EXPORT;
 const PHASE_PRODUCTION_BUILD = 'phase-production-build';
@@ -10042,14 +10029,22 @@ const STATIC_PROPS_ID = '__N_SSG';
 exports.STATIC_PROPS_ID = STATIC_PROPS_ID;
 const SERVER_PROPS_ID = '__N_SSP';
 exports.SERVER_PROPS_ID = SERVER_PROPS_ID;
-const OPTIMIZED_FONT_PROVIDERS = ['https://fonts.googleapis.com/css', 'https://use.typekit.net/'];
+const GOOGLE_FONT_PROVIDER = 'https://fonts.googleapis.com/css';
+exports.GOOGLE_FONT_PROVIDER = GOOGLE_FONT_PROVIDER;
+const OPTIMIZED_FONT_PROVIDERS = [{
+  url: GOOGLE_FONT_PROVIDER,
+  preconnect: 'https://fonts.gstatic.com'
+}, {
+  url: 'https://use.typekit.net',
+  preconnect: 'https://use.typekit.net'
+}];
 exports.OPTIMIZED_FONT_PROVIDERS = OPTIMIZED_FONT_PROVIDERS;
 const STATIC_STATUS_PAGES = ['/500'];
 exports.STATIC_STATUS_PAGES = STATIC_STATUS_PAGES;
 
 /***/ }),
 
-/***/ 2730:
+/***/ 7403:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10074,7 +10069,7 @@ if (false) {}
 
 /***/ }),
 
-/***/ 4287:
+/***/ 1165:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10099,7 +10094,7 @@ if (false) {}
 
 /***/ }),
 
-/***/ 7947:
+/***/ 2775:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10117,13 +10112,13 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(__webpack_require__(7294));
 
-var _sideEffect = _interopRequireDefault(__webpack_require__(617));
+var _sideEffect = _interopRequireDefault(__webpack_require__(3244));
 
-var _ampContext = __webpack_require__(3367);
+var _ampContext = __webpack_require__(3398);
 
-var _headManagerContext = __webpack_require__(4287);
+var _headManagerContext = __webpack_require__(1165);
 
-var _amp = __webpack_require__(7845);
+var _amp = __webpack_require__(6393);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -10335,17 +10330,14 @@ function Head({
     headManager: headManager,
     inAmpMode: (0, _amp.isInAmpMode)(ampState)
   }, children);
-} // TODO: Remove in the next major release
-
-
-Head.rewind = () => {};
+}
 
 var _default = Head;
 exports.default = _default;
 
 /***/ }),
 
-/***/ 5557:
+/***/ 999:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -10380,7 +10372,7 @@ function detectDomainLocale(domainItems, hostname, detectedLocale) {
 
 /***/ }),
 
-/***/ 1407:
+/***/ 1471:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -10398,7 +10390,7 @@ function detectLocaleCookie(req, locales) {
 
 /***/ }),
 
-/***/ 1253:
+/***/ 6813:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -10429,7 +10421,7 @@ function normalizeLocalePath(pathname, locales) {
 
 /***/ }),
 
-/***/ 8903:
+/***/ 519:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10454,7 +10446,7 @@ if (false) {}
 
 /***/ }),
 
-/***/ 5547:
+/***/ 7653:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10473,7 +10465,7 @@ var _react = _interopRequireDefault(__webpack_require__(7294));
 
 var _useSubscription = __webpack_require__(7161);
 
-var _loadableContext = __webpack_require__(8903);
+var _loadableContext = __webpack_require__(519);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -10527,52 +10519,8 @@ function load(loader) {
   return state;
 }
 
-function loadMap(obj) {
-  let state = {
-    loading: false,
-    loaded: {},
-    error: null
-  };
-  let promises = [];
-
-  try {
-    Object.keys(obj).forEach(key => {
-      let result = load(obj[key]);
-
-      if (!result.loading) {
-        state.loaded[key] = result.loaded;
-        state.error = result.error;
-      } else {
-        state.loading = true;
-      }
-
-      promises.push(result.promise);
-      result.promise.then(res => {
-        state.loaded[key] = res;
-      }).catch(err => {
-        state.error = err;
-      });
-    });
-  } catch (err) {
-    state.error = err;
-  }
-
-  state.promise = Promise.all(promises).then(res => {
-    state.loading = false;
-    return res;
-  }).catch(err => {
-    state.loading = false;
-    throw err;
-  });
-  return state;
-}
-
 function resolve(obj) {
   return obj && obj.__esModule ? obj.default : obj;
-}
-
-function render(loaded, props) {
-  return /*#__PURE__*/_react.default.createElement(resolve(loaded), props);
 }
 
 function createLoadableComponent(loadFn, options) {
@@ -10581,7 +10529,6 @@ function createLoadableComponent(loadFn, options) {
     loading: null,
     delay: 200,
     timeout: null,
-    render: render,
     webpack: null,
     modules: null
   }, options);
@@ -10645,7 +10592,7 @@ function createLoadableComponent(loadFn, options) {
           retry: subscription.retry
         });
       } else if (state.loaded) {
-        return opts.render(state.loaded, props);
+        return /*#__PURE__*/_react.default.createElement(resolve(state.loaded), props);
       } else {
         return null;
       }
@@ -10753,16 +10700,6 @@ function Loadable(opts) {
   return createLoadableComponent(load, opts);
 }
 
-function LoadableMap(opts) {
-  if (typeof opts.render !== 'function') {
-    throw new Error('LoadableMap requires a `render(loaded, props)` function');
-  }
-
-  return createLoadableComponent(loadMap, opts);
-}
-
-Loadable.Map = LoadableMap;
-
 function flushInitializers(initializers, ids) {
   let promises = [];
 
@@ -10803,53 +10740,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 7332:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = mitt;
-/*
-MIT License
-Copyright (c) Jason Miller (https://jasonformat.com/)
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-// This file is based on https://github.com/developit/mitt/blob/v1.1.3/src/index.js
-// It's been edited for the needs of this script
-// See the LICENSE at the top of the file
-
-function mitt() {
-  const all = Object.create(null);
-  return {
-    on(type, handler) {
-      ;
-      (all[type] || (all[type] = [])).push(handler);
-    },
-
-    off(type, handler) {
-      if (all[type]) {
-        all[type].splice(all[type].indexOf(handler) >>> 0, 1);
-      }
-    },
-
-    emit(type, ...evts) {
-      // eslint-disable-next-line array-callback-return
-      ;
-      (all[type] || []).slice().map(handler => {
-        handler(...evts);
-      });
-    }
-
-  };
-}
-
-/***/ }),
-
-/***/ 7771:
+/***/ 8170:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -10862,7 +10753,7 @@ var _escapeStringRegexp = _interopRequireDefault(__webpack_require__(7239));
 
 var _nodeHtmlParser = __webpack_require__(698);
 
-var _constants = __webpack_require__(7007);
+var _constants = __webpack_require__(6885);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -10919,6 +10810,7 @@ class FontOptimizerMiddleware {
   constructor() {
     this.mutate = async (markup, fontDefinitions, options) => {
       let result = markup;
+      let preconnectUrls = new Set();
 
       if (!options.getFontDefinition) {
         return markup;
@@ -10943,8 +10835,19 @@ class FontOptimizerMiddleware {
         } else {
           const nonceStr = nonce ? ` nonce="${nonce}"` : '';
           result = result.replace('</head>', `<style data-href="${url}"${nonceStr}>${fontContent}</style></head>`);
+
+          const provider = _constants.OPTIMIZED_FONT_PROVIDERS.find(p => url.startsWith(p.url));
+
+          if (provider) {
+            preconnectUrls.add(provider.preconnect);
+          }
         }
       });
+      let preconnectTag = '';
+      preconnectUrls.forEach(url => {
+        preconnectTag += `<link rel="preconnect" href="${url}" crossorigin />`;
+      });
+      result = result.replace('<meta name="next-font-preconnect"/>', preconnectTag);
       return result;
     };
   }
@@ -10956,7 +10859,9 @@ class FontOptimizerMiddleware {
 
     const fontDefinitions = []; // collecting all the requested font definitions
 
-    originalDom.querySelectorAll('link').filter(tag => tag.getAttribute('rel') === 'stylesheet' && tag.hasAttribute('data-href') && _constants.OPTIMIZED_FONT_PROVIDERS.some(url => {
+    originalDom.querySelectorAll('link').filter(tag => tag.getAttribute('rel') === 'stylesheet' && tag.hasAttribute('data-href') && _constants.OPTIMIZED_FONT_PROVIDERS.some(({
+      url
+    }) => {
       const dataHref = tag.getAttribute('data-href');
       return dataHref ? dataHref.startsWith(url) : false;
     })).forEach(element => {
@@ -10977,7 +10882,7 @@ class ImageOptimizerMiddleware {
     this.mutate = async (markup, imgPreloads) => {
       let result = markup;
       let imagePreloadTags = imgPreloads.filter(imgHref => !preloadTagAlreadyExists(markup, imgHref)).reduce((acc, imgHref) => acc + `<link rel="preload" href="${imgHref}" as="image"/>`, '');
-      return result.replace(/<link rel="preload"/, `${imagePreloadTags}<link rel="preload"`);
+      return result.replace('<meta name="next-image-preload"/>', imagePreloadTags);
     };
   }
 
@@ -11077,7 +10982,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1642:
+/***/ 6171:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -11102,7 +11007,7 @@ if (false) {}
 
 /***/ }),
 
-/***/ 7687:
+/***/ 2960:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -11111,7 +11016,7 @@ if (false) {}
 exports.__esModule = true;
 exports.formatUrl = formatUrl;
 
-var querystring = _interopRequireWildcard(__webpack_require__(4915));
+var querystring = _interopRequireWildcard(__webpack_require__(8187));
 
 function _getRequireWildcardCache() {
   if (typeof WeakMap !== "function") return null;
@@ -11233,7 +11138,7 @@ function formatUrl(urlObj) {
 
 /***/ }),
 
-/***/ 8654:
+/***/ 7322:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -11258,7 +11163,7 @@ function getRouteFromAssetPath(assetPath, ext = '') {
 
 /***/ }),
 
-/***/ 3288:
+/***/ 8073:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -11275,7 +11180,7 @@ function isDynamicRoute(route) {
 
 /***/ }),
 
-/***/ 4436:
+/***/ 3900:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -11284,9 +11189,9 @@ function isDynamicRoute(route) {
 exports.__esModule = true;
 exports.parseRelativeUrl = parseRelativeUrl;
 
-var _utils = __webpack_require__(3937);
+var _utils = __webpack_require__(4755);
 
-var _querystring = __webpack_require__(4915);
+var _querystring = __webpack_require__(8187);
 /**
 * Parses path-relative urls (e.g. `/hello/world?foo=bar`). If url isn't path-relative
 * (e.g. `./hello`) then at least base must be.
@@ -11322,7 +11227,7 @@ function parseRelativeUrl(url, base) {
 
 /***/ }),
 
-/***/ 6925:
+/***/ 3685:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -11436,7 +11341,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1327:
+/***/ 1005:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -11454,9 +11359,9 @@ exports.compileNonPath = compileNonPath;
 exports.default = prepareDestination;
 exports.getSafeParamName = void 0;
 
-var _querystring = __webpack_require__(4915);
+var _querystring = __webpack_require__(8187);
 
-var _parseRelativeUrl = __webpack_require__(4436);
+var _parseRelativeUrl = __webpack_require__(3900);
 
 var pathToRegexp = _interopRequireWildcard(__webpack_require__(4329));
 
@@ -11728,7 +11633,7 @@ function prepareDestination(destination, params, query, appendParamsToQuery) {
 
 /***/ }),
 
-/***/ 4915:
+/***/ 8187:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -11784,7 +11689,7 @@ function assign(target, ...searchParamsList) {
 
 /***/ }),
 
-/***/ 7451:
+/***/ 8085:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -11830,7 +11735,7 @@ function getRouteMatcher(routeRegex) {
 
 /***/ }),
 
-/***/ 8193:
+/***/ 4550:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -11955,7 +11860,7 @@ function getRouteRegex(normalizedRoute) {
 
 /***/ }),
 
-/***/ 617:
+/***/ 3244:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -12017,7 +11922,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 3937:
+/***/ 4755:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -12033,7 +11938,7 @@ exports.loadGetInitialProps = loadGetInitialProps;
 exports.formatWithValidation = formatWithValidation;
 exports.ST = exports.SP = exports.urlObjectKeys = void 0;
 
-var _formatUrl = __webpack_require__(7687);
+var _formatUrl = __webpack_require__(2960);
 /**
 * Utils
 */
@@ -12126,7 +12031,7 @@ exports.ST = ST;
 
 /***/ }),
 
-/***/ 6381:
+/***/ 3857:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -12135,13 +12040,11 @@ exports.ST = ST;
 var _interopRequireDefault = __webpack_require__(5318);
 
 exports.__esModule = true;
-exports.Container = Container;
-exports.createUrl = createUrl;
 exports.default = void 0;
 
 var _react = _interopRequireDefault(__webpack_require__(7294));
 
-var _utils = __webpack_require__(3937);
+var _utils = __webpack_require__(4755);
 
 exports.AppInitialProps = _utils.AppInitialProps;
 exports.NextWebVitalsMetric = _utils.NextWebVitalsMetric;
@@ -12161,26 +12064,12 @@ async function appGetInitialProps({
 }
 
 class App extends _react.default.Component {
-  // Kept here for backwards compatibility.
-  // When someone ended App they could call `super.componentDidCatch`.
-  // @deprecated This method is no longer needed. Errors are caught at the top level
-  componentDidCatch(error, _errorInfo) {
-    throw error;
-  }
-
   render() {
     const {
-      router,
       Component,
-      pageProps,
-      __N_SSG,
-      __N_SSP
+      pageProps
     } = this.props;
-    return /*#__PURE__*/_react.default.createElement(Component, Object.assign({}, pageProps, // we don't add the legacy URL prop if it's using non-legacy
-    // methods like getStaticProps and getServerSideProps
-    !(__N_SSG || __N_SSP) ? {
-      url: createUrl(router)
-    } : {}));
+    return /*#__PURE__*/_react.default.createElement(Component, pageProps);
   }
 
 }
@@ -12188,70 +12077,10 @@ class App extends _react.default.Component {
 exports.default = App;
 App.origGetInitialProps = appGetInitialProps;
 App.getInitialProps = appGetInitialProps;
-let warnContainer;
-let warnUrl;
-
-if (false) {} // @deprecated noop for now until removal
-
-
-function Container(p) {
-  if (false) {}
-  return p.children;
-}
-
-function createUrl(router) {
-  // This is to make sure we don't references the router object at call time
-  const {
-    pathname,
-    asPath,
-    query
-  } = router;
-  return {
-    get query() {
-      if (false) {}
-      return query;
-    },
-
-    get pathname() {
-      if (false) {}
-      return pathname;
-    },
-
-    get asPath() {
-      if (false) {}
-      return asPath;
-    },
-
-    back: () => {
-      if (false) {}
-      router.back();
-    },
-    push: (url, as) => {
-      if (false) {}
-      return router.push(url, as);
-    },
-    pushTo: (href, as) => {
-      if (false) {}
-      const pushRoute = as ? href : '';
-      const pushUrl = as || href;
-      return router.push(pushRoute, pushUrl);
-    },
-    replace: (url, as) => {
-      if (false) {}
-      return router.replace(url, as);
-    },
-    replaceTo: (href, as) => {
-      if (false) {}
-      const replaceRoute = as ? href : '';
-      const replaceUrl = as || href;
-      return router.replace(replaceRoute, replaceUrl);
-    }
-  };
-}
 
 /***/ }),
 
-/***/ 2400:
+/***/ 8881:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -12278,11 +12107,11 @@ var _react = _interopRequireWildcard(__webpack_require__(7294));
 
 var _server = _interopRequireDefault(__webpack_require__(1800));
 
-var _constants = __webpack_require__(7007);
+var _constants = __webpack_require__(6885);
 
-var _documentContext = __webpack_require__(2730);
+var _documentContext = __webpack_require__(7403);
 
-var _utils = __webpack_require__(3937);
+var _utils = __webpack_require__(4755);
 
 exports.DocumentContext = _utils.DocumentContext;
 exports.DocumentInitialProps = _utils.DocumentInitialProps;
@@ -12294,7 +12123,7 @@ var _utils2 = __webpack_require__(7002);
 
 var _htmlescape = __webpack_require__(9630);
 
-var _experimentalScript = _interopRequireDefault(__webpack_require__(1297));
+var _script = _interopRequireDefault(__webpack_require__(7926));
 
 function _getRequireWildcardCache() {
   if (typeof WeakMap !== "function") return null;
@@ -12637,7 +12466,7 @@ class Head extends _react.Component {
     const filteredChildren = [];
 
     _react.default.Children.forEach(children, child => {
-      if (child.type === _experimentalScript.default) {
+      if (child.type === _script.default) {
         if (child.props.strategy === 'beforeInteractive') {
           scriptLoader.beforeInteractive = (scriptLoader.beforeInteractive || []).concat([_objectSpread({}, child.props)]);
           return;
@@ -12656,7 +12485,9 @@ class Head extends _react.Component {
 
   makeStylesheetInert(node) {
     return _react.default.Children.map(node, c => {
-      if (c.type === 'link' && c.props['href'] && _constants.OPTIMIZED_FONT_PROVIDERS.some(url => c.props['href'].startsWith(url))) {
+      if (c.type === 'link' && c.props['href'] && _constants.OPTIMIZED_FONT_PROVIDERS.some(({
+        url
+      }) => c.props['href'].startsWith(url))) {
         const newProps = _objectSpread({}, c.props || {});
 
         newProps['data-href'] = newProps['href'];
@@ -12715,8 +12546,7 @@ class Head extends _react.Component {
       children = this.makeStylesheetInert(children);
     }
 
-    if (false) {}
-
+    children = this.handleDocumentScriptLoaderItems(children);
     let hasAmphtmlRel = false;
     let hasCanonicalRel = false; // show warning and remove conflicting amp head tags
 
@@ -12797,7 +12627,9 @@ class Head extends _react.Component {
       dangerouslySetInnerHTML: {
         __html: `body{display:block}`
       }
-    }))), children, head, /*#__PURE__*/_react.default.createElement("meta", {
+    }))), children,  true && /*#__PURE__*/_react.default.createElement("meta", {
+      name: "next-font-preconnect"
+    }), head, /*#__PURE__*/_react.default.createElement("meta", {
       name: "next-head-count",
       content: _react.default.Children.count(head || []).toString()
     }), inAmpMode && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("meta", {
@@ -12833,7 +12665,7 @@ class Head extends _react.Component {
       href: canonicalBase + getAmpPath(ampPath, dangerousAsPath)
     }),  true && this.getCssLinks(files),  true && /*#__PURE__*/_react.default.createElement("noscript", {
       "data-n-css": (_this$props$nonce = this.props.nonce) != null ? _this$props$nonce : ''
-    }), !disableRuntimeJS && !disableJsPreload && this.getPreloadDynamicChunks(), !disableRuntimeJS && !disableJsPreload && this.getPreloadMainLinks(files), !disableOptimizedLoading && !disableRuntimeJS && this.getPolyfillScripts(), !disableOptimizedLoading && !disableRuntimeJS && this.getPreNextScripts(), !disableOptimizedLoading && !disableRuntimeJS && this.getDynamicChunks(files), !disableOptimizedLoading && !disableRuntimeJS && this.getScripts(files),  false && 0,  false && /*#__PURE__*/0, this.context.isDevelopment &&
+    }),  false && /*#__PURE__*/0, !disableRuntimeJS && !disableJsPreload && this.getPreloadDynamicChunks(), !disableRuntimeJS && !disableJsPreload && this.getPreloadMainLinks(files), !disableOptimizedLoading && !disableRuntimeJS && this.getPolyfillScripts(), !disableOptimizedLoading && !disableRuntimeJS && this.getPreNextScripts(), !disableOptimizedLoading && !disableRuntimeJS && this.getDynamicChunks(files), !disableOptimizedLoading && !disableRuntimeJS && this.getScripts(files),  false && 0,  false && /*#__PURE__*/0, this.context.isDevelopment &&
     /*#__PURE__*/
     // this element is used to mount development styles so the
     // ordering matches production
@@ -12979,7 +12811,7 @@ function getAmpPath(ampPath, asPath) {
 
 /***/ }),
 
-/***/ 900:
+/***/ 3359:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -12992,7 +12824,7 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(__webpack_require__(7294));
 
-var _head = _interopRequireDefault(__webpack_require__(7947));
+var _head = _interopRequireDefault(__webpack_require__(2775));
 
 const statusCodes = {
   400: 'Bad Request',
@@ -13023,7 +12855,7 @@ class Error extends _react.default.Component {
     const title = this.props.title || statusCodes[statusCode] || 'An unexpected error has occurred';
     return /*#__PURE__*/_react.default.createElement("div", {
       style: styles.error
-    }, /*#__PURE__*/_react.default.createElement(_head.default, null, /*#__PURE__*/_react.default.createElement("title", null, statusCode, ": ", title)), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("style", {
+    }, /*#__PURE__*/_react.default.createElement(_head.default, null, /*#__PURE__*/_react.default.createElement("title", null, statusCode ? `${statusCode}: ${title}` : 'Application error: a client-side exception has occurred')), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("style", {
       dangerouslySetInnerHTML: {
         __html: 'body { margin: 0 }'
       }
@@ -13033,7 +12865,9 @@ class Error extends _react.default.Component {
       style: styles.desc
     }, /*#__PURE__*/_react.default.createElement("h2", {
       style: styles.h2
-    }, title, "."))));
+    }, this.props.title || statusCode ? title : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, "Application error: a client-side exception has occurred (", /*#__PURE__*/_react.default.createElement("a", {
+      href: "https://nextjs.org/docs/messages/client-side-exception-occurred"
+    }, "developer guidance"), ")"), "."))));
   }
 
 }
@@ -13082,12 +12916,21 @@ const styles = {
 
 /***/ }),
 
+/***/ 4332:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+exports.__esModule=true;exports.wait=wait;exports.error=error;exports.warn=warn;exports.ready=ready;exports.info=info;exports.event=event;exports.prefixes=void 0;var _chalk=_interopRequireDefault(__webpack_require__(2589));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}const prefixes={wait:_chalk.default.cyan('wait')+'  -',error:_chalk.default.red('error')+' -',warn:_chalk.default.yellow('warn')+'  -',ready:_chalk.default.green('ready')+' -',info:_chalk.default.cyan('info')+'  -',event:_chalk.default.magenta('event')+' -'};exports.prefixes=prefixes;function wait(...message){console.log(prefixes.wait,...message);}function error(...message){console.error(prefixes.error,...message);}function warn(...message){console.warn(prefixes.warn,...message);}function ready(...message){console.log(prefixes.ready,...message);}function info(...message){console.log(prefixes.info,...message);}function event(...message){console.log(prefixes.event,...message);}
+//# sourceMappingURL=log.js.map
+
+/***/ }),
+
 /***/ 9436:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 var __webpack_unused_export__;
-__webpack_unused_export__=true;exports.u=getPageHandler;var _url=__webpack_require__(8835);var _utils=__webpack_require__(3937);var _sendPayload=__webpack_require__(4897);var _utils2=__webpack_require__(2056);var _render=__webpack_require__(2913);var _apiUtils=__webpack_require__(5087);var _denormalizePagePath=__webpack_require__(9320);var _loadCustomRoutes=__webpack_require__(3997);var _getRouteFromAssetPath=_interopRequireDefault(__webpack_require__(8654));var _constants=__webpack_require__(7007);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function getPageHandler(ctx){const{page,pageComponent,pageConfig,pageGetStaticProps,pageGetStaticPaths,pageGetServerSideProps,appModule,documentModule,errorModule,notFoundModule,encodedPreviewProps,pageIsDynamic,generateEtags,poweredByHeader,runtimeConfig,buildManifest,reactLoadableManifest,i18n,buildId,basePath,assetPrefix,canonicalBase,escapedBuildId}=ctx;const{handleLocale,handleRewrites,handleBasePath,defaultRouteRegex,dynamicRouteMatcher,interpolateDynamicPath,getParamsFromRouteMatches,normalizeDynamicRouteParams,normalizeVercelUrl}=(0,_utils2.getUtils)(ctx);async function renderReqToHTML(req,res,renderMode,_renderOpts,_params){let Component;let App;let config;let Document;let Error;let notFoundMod;let getStaticProps;let getStaticPaths;let getServerSideProps;[getStaticProps,getServerSideProps,getStaticPaths,Component,App,config,{default:Document},{default:Error},notFoundMod]=await Promise.all([pageGetStaticProps,pageGetServerSideProps,pageGetStaticPaths,pageComponent,appModule,pageConfig,documentModule,errorModule,notFoundModule]);const fromExport=renderMode==='export'||renderMode===true;const nextStartMode=renderMode==='passthrough';let hasValidParams=true;(0,_apiUtils.setLazyProp)({req:req},'cookies',(0,_apiUtils.getCookieParser)(req));const options={App,Document,buildManifest,getStaticProps,getServerSideProps,getStaticPaths,reactLoadableManifest,canonicalBase,buildId,assetPrefix,runtimeConfig:(runtimeConfig||{}).publicRuntimeConfig||{},previewProps:encodedPreviewProps,env:process.env,basePath,..._renderOpts};let _nextData=false;let defaultLocale=i18n==null?void 0:i18n.defaultLocale;let detectedLocale=i18n==null?void 0:i18n.defaultLocale;let parsedUrl;try{var _req$headers;// We need to trust the dynamic route params from the proxy
+__webpack_unused_export__=true;exports.u=getPageHandler;var _url=__webpack_require__(8835);var _utils=__webpack_require__(4755);var _sendPayload=__webpack_require__(4897);var _utils2=__webpack_require__(2056);var _render=__webpack_require__(2913);var _apiUtils=__webpack_require__(5087);var _denormalizePagePath=__webpack_require__(9320);var _loadCustomRoutes=__webpack_require__(3997);var _getRouteFromAssetPath=_interopRequireDefault(__webpack_require__(7322));var _constants=__webpack_require__(6885);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function getPageHandler(ctx){const{page,pageComponent,pageConfig,pageGetStaticProps,pageGetStaticPaths,pageGetServerSideProps,appModule,documentModule,errorModule,notFoundModule,encodedPreviewProps,pageIsDynamic,generateEtags,poweredByHeader,runtimeConfig,buildManifest,reactLoadableManifest,i18n,buildId,basePath,assetPrefix,canonicalBase,escapedBuildId}=ctx;const{handleLocale,handleRewrites,handleBasePath,defaultRouteRegex,dynamicRouteMatcher,interpolateDynamicPath,getParamsFromRouteMatches,normalizeDynamicRouteParams,normalizeVercelUrl}=(0,_utils2.getUtils)(ctx);async function renderReqToHTML(req,res,renderMode,_renderOpts,_params){let Component;let App;let config;let Document;let Error;let notFoundMod;let getStaticProps;let getStaticPaths;let getServerSideProps;[getStaticProps,getServerSideProps,getStaticPaths,Component,App,config,{default:Document},{default:Error},notFoundMod]=await Promise.all([pageGetStaticProps,pageGetServerSideProps,pageGetStaticPaths,pageComponent,appModule,pageConfig,documentModule,errorModule,notFoundModule]);const fromExport=renderMode==='export'||renderMode===true;const nextStartMode=renderMode==='passthrough';let hasValidParams=true;(0,_apiUtils.setLazyProp)({req:req},'cookies',(0,_apiUtils.getCookieParser)(req));const options={App,Document,buildManifest,getStaticProps,getServerSideProps,getStaticPaths,reactLoadableManifest,canonicalBase,buildId,assetPrefix,runtimeConfig:(runtimeConfig||{}).publicRuntimeConfig||{},previewProps:encodedPreviewProps,env:process.env,basePath,..._renderOpts};let _nextData=false;let defaultLocale=i18n==null?void 0:i18n.defaultLocale;let detectedLocale=i18n==null?void 0:i18n.defaultLocale;let parsedUrl;try{var _req$headers;// We need to trust the dynamic route params from the proxy
 // to ensure we are using the correct values
 const trustQuery=!getStaticProps&&req.headers[_utils2.vercelHeader];parsedUrl=(0,_url.parse)(req.url,true);let routeNoAssetPath=parsedUrl.pathname;if(basePath){routeNoAssetPath=routeNoAssetPath.replace(new RegExp(`^${basePath}`),'')||'/';}const origQuery=Object.assign({},parsedUrl.query);parsedUrl=handleRewrites(req,parsedUrl);handleBasePath(req,parsedUrl);// remove ?amp=1 from request URL if rendering for export
 if(fromExport&&parsedUrl.query.amp){const queryNoAmp=Object.assign({},origQuery);delete queryNoAmp.amp;req.url=(0,_url.format)({...parsedUrl,search:undefined,query:queryNoAmp});}if(parsedUrl.pathname.match(/_next\/data/)){_nextData=page!=='/_error';parsedUrl.pathname=(0,_getRouteFromAssetPath.default)(parsedUrl.pathname.replace(new RegExp(`/_next/data/${escapedBuildId}/`),'/'),'.json');routeNoAssetPath=parsedUrl.pathname;}const localeResult=handleLocale(req,res,parsedUrl,routeNoAssetPath,fromExport||nextStartMode);defaultLocale=(localeResult==null?void 0:localeResult.defaultLocale)||defaultLocale;detectedLocale=(localeResult==null?void 0:localeResult.detectedLocale)||detectedLocale;routeNoAssetPath=(localeResult==null?void 0:localeResult.routeNoAssetPath)||routeNoAssetPath;if(parsedUrl.query.nextInternalLocale){detectedLocale=parsedUrl.query.nextInternalLocale;delete parsedUrl.query.nextInternalLocale;}const renderOpts=Object.assign({Component,pageConfig:config,nextExport:fromExport,isDataReq:_nextData,locales:i18n==null?void 0:i18n.locales,locale:detectedLocale,defaultLocale,domainLocales:i18n==null?void 0:i18n.domains},options);if(page==='/_error'&&!res.statusCode){res.statusCode=404;}let params={};if(!fromExport&&pageIsDynamic){const result=normalizeDynamicRouteParams(trustQuery?parsedUrl.query:dynamicRouteMatcher(parsedUrl.pathname));hasValidParams=result.hasValidParams;params=result.params;}let nowParams=null;if(pageIsDynamic&&!hasValidParams&&(_req$headers=req.headers)!=null&&_req$headers['x-now-route-matches']){nowParams=getParamsFromRouteMatches(req,renderOpts,detectedLocale);}// make sure to set renderOpts to the correct params e.g. _params
@@ -13118,7 +12961,7 @@ throw err;}}};}
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.getUtils=getUtils;exports.vercelHeader=void 0;var _url=__webpack_require__(8835);var _querystring=__webpack_require__(1191);var _normalizeLocalePath=__webpack_require__(1253);var _pathMatch=_interopRequireDefault(__webpack_require__(6925));var _routeRegex=__webpack_require__(8193);var _routeMatcher=__webpack_require__(7451);var _prepareDestination=_interopRequireWildcard(__webpack_require__(1327));var _accept=_interopRequireDefault(__webpack_require__(3544));var _detectLocaleCookie=__webpack_require__(1407);var _detectDomainLocale=__webpack_require__(5557);var _denormalizePagePath=__webpack_require__(9320);var _cookie=_interopRequireDefault(__webpack_require__(738));var _constants=__webpack_require__(7007);function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}const getCustomRouteMatcher=(0,_pathMatch.default)(true);const vercelHeader='x-vercel-id';exports.vercelHeader=vercelHeader;function getUtils({page,i18n,basePath,rewrites,pageIsDynamic}){let defaultRouteRegex;let dynamicRouteMatcher;let defaultRouteMatches;if(pageIsDynamic){defaultRouteRegex=(0,_routeRegex.getRouteRegex)(page);dynamicRouteMatcher=(0,_routeMatcher.getRouteMatcher)(defaultRouteRegex);defaultRouteMatches=dynamicRouteMatcher(page);}function handleRewrites(req,parsedUrl){for(const rewrite of rewrites){const matcher=getCustomRouteMatcher(rewrite.source);let params=matcher(parsedUrl.pathname);if(rewrite.has&&params){const hasParams=(0,_prepareDestination.matchHas)(req,rewrite.has,parsedUrl.query);if(hasParams){Object.assign(params,hasParams);}else{params=false;}}if(params){const{parsedDestination}=(0,_prepareDestination.default)(rewrite.destination,params,parsedUrl.query,true);Object.assign(parsedUrl.query,parsedDestination.query);delete parsedDestination.query;Object.assign(parsedUrl,parsedDestination);let fsPathname=parsedUrl.pathname;if(basePath){fsPathname=fsPathname.replace(new RegExp(`^${basePath}`),'')||'/';}if(i18n){const destLocalePathResult=(0,_normalizeLocalePath.normalizeLocalePath)(fsPathname,i18n.locales);fsPathname=destLocalePathResult.pathname;parsedUrl.query.nextInternalLocale=destLocalePathResult.detectedLocale||params.nextInternalLocale;}if(fsPathname===page){break;}if(pageIsDynamic&&dynamicRouteMatcher){const dynamicParams=dynamicRouteMatcher(fsPathname);if(dynamicParams){parsedUrl.query={...parsedUrl.query,...dynamicParams};break;}}}}return parsedUrl;}function handleBasePath(req,parsedUrl){// always strip the basePath if configured since it is required
+exports.__esModule=true;exports.getUtils=getUtils;exports.vercelHeader=void 0;var _url=__webpack_require__(8835);var _querystring=__webpack_require__(1191);var _normalizeLocalePath=__webpack_require__(6813);var _pathMatch=_interopRequireDefault(__webpack_require__(3685));var _routeRegex=__webpack_require__(4550);var _routeMatcher=__webpack_require__(8085);var _prepareDestination=_interopRequireWildcard(__webpack_require__(1005));var _accept=_interopRequireDefault(__webpack_require__(3544));var _detectLocaleCookie=__webpack_require__(1471);var _detectDomainLocale=__webpack_require__(999);var _denormalizePagePath=__webpack_require__(9320);var _cookie=_interopRequireDefault(__webpack_require__(738));var _constants=__webpack_require__(6885);function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}const getCustomRouteMatcher=(0,_pathMatch.default)(true);const vercelHeader='x-vercel-id';exports.vercelHeader=vercelHeader;function getUtils({page,i18n,basePath,rewrites,pageIsDynamic}){let defaultRouteRegex;let dynamicRouteMatcher;let defaultRouteMatches;if(pageIsDynamic){defaultRouteRegex=(0,_routeRegex.getRouteRegex)(page);dynamicRouteMatcher=(0,_routeMatcher.getRouteMatcher)(defaultRouteRegex);defaultRouteMatches=dynamicRouteMatcher(page);}function handleRewrites(req,parsedUrl){for(const rewrite of rewrites){const matcher=getCustomRouteMatcher(rewrite.source);let params=matcher(parsedUrl.pathname);if(rewrite.has&&params){const hasParams=(0,_prepareDestination.matchHas)(req,rewrite.has,parsedUrl.query);if(hasParams){Object.assign(params,hasParams);}else{params=false;}}if(params){const{parsedDestination}=(0,_prepareDestination.default)(rewrite.destination,params,parsedUrl.query,true);Object.assign(parsedUrl.query,parsedDestination.query);delete parsedDestination.query;Object.assign(parsedUrl,parsedDestination);let fsPathname=parsedUrl.pathname;if(basePath){fsPathname=fsPathname.replace(new RegExp(`^${basePath}`),'')||'/';}if(i18n){const destLocalePathResult=(0,_normalizeLocalePath.normalizeLocalePath)(fsPathname,i18n.locales);fsPathname=destLocalePathResult.pathname;parsedUrl.query.nextInternalLocale=destLocalePathResult.detectedLocale||params.nextInternalLocale;}if(fsPathname===page){break;}if(pageIsDynamic&&dynamicRouteMatcher){const dynamicParams=dynamicRouteMatcher(fsPathname);if(dynamicParams){parsedUrl.query={...parsedUrl.query,...dynamicParams};break;}}}}return parsedUrl;}function handleBasePath(req,parsedUrl){// always strip the basePath if configured since it is required
 req.url=req.url.replace(new RegExp(`^${basePath}`),'')||'/';parsedUrl.pathname=parsedUrl.pathname.replace(new RegExp(`^${basePath}`),'')||'/';}function getParamsFromRouteMatches(req,renderOpts,detectedLocale){return(0,_routeMatcher.getRouteMatcher)(function(){const{groups,routeKeys}=defaultRouteRegex;return{re:{// Simulate a RegExp match from the \`req.url\` input
 exec:str=>{const obj=(0,_querystring.parse)(str);// favor named matches if available
 const routeKeyNames=Object.keys(routeKeys||{});const filterLocaleItem=val=>{if(i18n){// locale items can be included in route-matches
@@ -13613,10 +13456,10 @@ module.exports=(()=>{var e={532:(e,s,t)=>{const r=Symbol("SemVer ANY");class Com
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.SSG_FALLBACK_EXPORT_ERROR=exports.NON_STANDARD_NODE_ENV=exports.GSSP_COMPONENT_MEMBER_ERROR=exports.UNSTABLE_REVALIDATE_RENAME_ERROR=exports.GSSP_NO_RETURNED_VALUE=exports.GSP_NO_RETURNED_VALUE=exports.SERVER_PROPS_EXPORT_ERROR=exports.STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=exports.SERVER_PROPS_SSG_CONFLICT=exports.SERVER_PROPS_GET_INIT_PROPS_CONFLICT=exports.SSG_GET_INITIAL_PROPS_CONFLICT=exports.PUBLIC_DIR_MIDDLEWARE_CONFLICT=exports.DOT_NEXT_ALIAS=exports.PAGES_DIR_ALIAS=exports.API_ROUTE=exports.NEXT_PROJECT_ROOT_DIST_SERVER=exports.NEXT_PROJECT_ROOT_DIST_CLIENT=exports.NEXT_PROJECT_ROOT_NODE_MODULES=exports.NEXT_PROJECT_ROOT_DIST=exports.NEXT_PROJECT_ROOT=void 0;var _path=__webpack_require__(5622);const NEXT_PROJECT_ROOT=(0,_path.join)(__dirname,'..','..');exports.NEXT_PROJECT_ROOT=NEXT_PROJECT_ROOT;const NEXT_PROJECT_ROOT_DIST=(0,_path.join)(NEXT_PROJECT_ROOT,'dist');exports.NEXT_PROJECT_ROOT_DIST=NEXT_PROJECT_ROOT_DIST;const NEXT_PROJECT_ROOT_NODE_MODULES=(0,_path.join)(NEXT_PROJECT_ROOT,'node_modules');exports.NEXT_PROJECT_ROOT_NODE_MODULES=NEXT_PROJECT_ROOT_NODE_MODULES;const NEXT_PROJECT_ROOT_DIST_CLIENT=(0,_path.join)(NEXT_PROJECT_ROOT_DIST,'client');exports.NEXT_PROJECT_ROOT_DIST_CLIENT=NEXT_PROJECT_ROOT_DIST_CLIENT;const NEXT_PROJECT_ROOT_DIST_SERVER=(0,_path.join)(NEXT_PROJECT_ROOT_DIST,'server');// Regex for API routes
+exports.__esModule=true;exports.ESLINT_DEFAULT_DIRS=exports.SSG_FALLBACK_EXPORT_ERROR=exports.NON_STANDARD_NODE_ENV=exports.GSSP_COMPONENT_MEMBER_ERROR=exports.UNSTABLE_REVALIDATE_RENAME_ERROR=exports.GSSP_NO_RETURNED_VALUE=exports.GSP_NO_RETURNED_VALUE=exports.SERVER_PROPS_EXPORT_ERROR=exports.STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=exports.SERVER_PROPS_SSG_CONFLICT=exports.SERVER_PROPS_GET_INIT_PROPS_CONFLICT=exports.SSG_GET_INITIAL_PROPS_CONFLICT=exports.PUBLIC_DIR_MIDDLEWARE_CONFLICT=exports.DOT_NEXT_ALIAS=exports.PAGES_DIR_ALIAS=exports.API_ROUTE=exports.NEXT_PROJECT_ROOT_DIST_SERVER=exports.NEXT_PROJECT_ROOT_DIST_CLIENT=exports.NEXT_PROJECT_ROOT_NODE_MODULES=exports.NEXT_PROJECT_ROOT_DIST=exports.NEXT_PROJECT_ROOT=void 0;var _path=__webpack_require__(5622);const NEXT_PROJECT_ROOT=(0,_path.join)(__dirname,'..','..');exports.NEXT_PROJECT_ROOT=NEXT_PROJECT_ROOT;const NEXT_PROJECT_ROOT_DIST=(0,_path.join)(NEXT_PROJECT_ROOT,'dist');exports.NEXT_PROJECT_ROOT_DIST=NEXT_PROJECT_ROOT_DIST;const NEXT_PROJECT_ROOT_NODE_MODULES=(0,_path.join)(NEXT_PROJECT_ROOT,'node_modules');exports.NEXT_PROJECT_ROOT_NODE_MODULES=NEXT_PROJECT_ROOT_NODE_MODULES;const NEXT_PROJECT_ROOT_DIST_CLIENT=(0,_path.join)(NEXT_PROJECT_ROOT_DIST,'client');exports.NEXT_PROJECT_ROOT_DIST_CLIENT=NEXT_PROJECT_ROOT_DIST_CLIENT;const NEXT_PROJECT_ROOT_DIST_SERVER=(0,_path.join)(NEXT_PROJECT_ROOT_DIST,'server');// Regex for API routes
 exports.NEXT_PROJECT_ROOT_DIST_SERVER=NEXT_PROJECT_ROOT_DIST_SERVER;const API_ROUTE=/^\/api(?:\/|$)/;// Because on Windows absolute paths in the generated code can break because of numbers, eg 1 in the path,
 // we have to use a private alias
-exports.API_ROUTE=API_ROUTE;const PAGES_DIR_ALIAS='private-next-pages';exports.PAGES_DIR_ALIAS=PAGES_DIR_ALIAS;const DOT_NEXT_ALIAS='private-dot-next';exports.DOT_NEXT_ALIAS=DOT_NEXT_ALIAS;const PUBLIC_DIR_MIDDLEWARE_CONFLICT=`You can not have a '_next' folder inside of your public folder. This conflicts with the internal '/_next' route. https://nextjs.org/docs/messages/public-next-folder-conflict`;exports.PUBLIC_DIR_MIDDLEWARE_CONFLICT=PUBLIC_DIR_MIDDLEWARE_CONFLICT;const SSG_GET_INITIAL_PROPS_CONFLICT=`You can not use getInitialProps with getStaticProps. To use SSG, please remove your getInitialProps`;exports.SSG_GET_INITIAL_PROPS_CONFLICT=SSG_GET_INITIAL_PROPS_CONFLICT;const SERVER_PROPS_GET_INIT_PROPS_CONFLICT=`You can not use getInitialProps with getServerSideProps. Please remove getInitialProps.`;exports.SERVER_PROPS_GET_INIT_PROPS_CONFLICT=SERVER_PROPS_GET_INIT_PROPS_CONFLICT;const SERVER_PROPS_SSG_CONFLICT=`You can not use getStaticProps or getStaticPaths with getServerSideProps. To use SSG, please remove getServerSideProps`;exports.SERVER_PROPS_SSG_CONFLICT=SERVER_PROPS_SSG_CONFLICT;const STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=`can not have getInitialProps/getServerSideProps, https://nextjs.org/docs/messages/404-get-initial-props`;exports.STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR;const SERVER_PROPS_EXPORT_ERROR=`pages with \`getServerSideProps\` can not be exported. See more info here: https://nextjs.org/docs/messages/gssp-export`;exports.SERVER_PROPS_EXPORT_ERROR=SERVER_PROPS_EXPORT_ERROR;const GSP_NO_RETURNED_VALUE='Your `getStaticProps` function did not return an object. Did you forget to add a `return`?';exports.GSP_NO_RETURNED_VALUE=GSP_NO_RETURNED_VALUE;const GSSP_NO_RETURNED_VALUE='Your `getServerSideProps` function did not return an object. Did you forget to add a `return`?';exports.GSSP_NO_RETURNED_VALUE=GSSP_NO_RETURNED_VALUE;const UNSTABLE_REVALIDATE_RENAME_ERROR='The `unstable_revalidate` property is available for general use.\n'+'Please use `revalidate` instead.';exports.UNSTABLE_REVALIDATE_RENAME_ERROR=UNSTABLE_REVALIDATE_RENAME_ERROR;const GSSP_COMPONENT_MEMBER_ERROR=`can not be attached to a page's component and must be exported from the page. See more info here: https://nextjs.org/docs/messages/gssp-component-member`;exports.GSSP_COMPONENT_MEMBER_ERROR=GSSP_COMPONENT_MEMBER_ERROR;const NON_STANDARD_NODE_ENV=`You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env`;exports.NON_STANDARD_NODE_ENV=NON_STANDARD_NODE_ENV;const SSG_FALLBACK_EXPORT_ERROR=`Pages with \`fallback\` enabled in \`getStaticPaths\` can not be exported. See more info here: https://nextjs.org/docs/messages/ssg-fallback-true-export`;exports.SSG_FALLBACK_EXPORT_ERROR=SSG_FALLBACK_EXPORT_ERROR;
+exports.API_ROUTE=API_ROUTE;const PAGES_DIR_ALIAS='private-next-pages';exports.PAGES_DIR_ALIAS=PAGES_DIR_ALIAS;const DOT_NEXT_ALIAS='private-dot-next';exports.DOT_NEXT_ALIAS=DOT_NEXT_ALIAS;const PUBLIC_DIR_MIDDLEWARE_CONFLICT=`You can not have a '_next' folder inside of your public folder. This conflicts with the internal '/_next' route. https://nextjs.org/docs/messages/public-next-folder-conflict`;exports.PUBLIC_DIR_MIDDLEWARE_CONFLICT=PUBLIC_DIR_MIDDLEWARE_CONFLICT;const SSG_GET_INITIAL_PROPS_CONFLICT=`You can not use getInitialProps with getStaticProps. To use SSG, please remove your getInitialProps`;exports.SSG_GET_INITIAL_PROPS_CONFLICT=SSG_GET_INITIAL_PROPS_CONFLICT;const SERVER_PROPS_GET_INIT_PROPS_CONFLICT=`You can not use getInitialProps with getServerSideProps. Please remove getInitialProps.`;exports.SERVER_PROPS_GET_INIT_PROPS_CONFLICT=SERVER_PROPS_GET_INIT_PROPS_CONFLICT;const SERVER_PROPS_SSG_CONFLICT=`You can not use getStaticProps or getStaticPaths with getServerSideProps. To use SSG, please remove getServerSideProps`;exports.SERVER_PROPS_SSG_CONFLICT=SERVER_PROPS_SSG_CONFLICT;const STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=`can not have getInitialProps/getServerSideProps, https://nextjs.org/docs/messages/404-get-initial-props`;exports.STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR=STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR;const SERVER_PROPS_EXPORT_ERROR=`pages with \`getServerSideProps\` can not be exported. See more info here: https://nextjs.org/docs/messages/gssp-export`;exports.SERVER_PROPS_EXPORT_ERROR=SERVER_PROPS_EXPORT_ERROR;const GSP_NO_RETURNED_VALUE='Your `getStaticProps` function did not return an object. Did you forget to add a `return`?';exports.GSP_NO_RETURNED_VALUE=GSP_NO_RETURNED_VALUE;const GSSP_NO_RETURNED_VALUE='Your `getServerSideProps` function did not return an object. Did you forget to add a `return`?';exports.GSSP_NO_RETURNED_VALUE=GSSP_NO_RETURNED_VALUE;const UNSTABLE_REVALIDATE_RENAME_ERROR='The `unstable_revalidate` property is available for general use.\n'+'Please use `revalidate` instead.';exports.UNSTABLE_REVALIDATE_RENAME_ERROR=UNSTABLE_REVALIDATE_RENAME_ERROR;const GSSP_COMPONENT_MEMBER_ERROR=`can not be attached to a page's component and must be exported from the page. See more info here: https://nextjs.org/docs/messages/gssp-component-member`;exports.GSSP_COMPONENT_MEMBER_ERROR=GSSP_COMPONENT_MEMBER_ERROR;const NON_STANDARD_NODE_ENV=`You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env`;exports.NON_STANDARD_NODE_ENV=NON_STANDARD_NODE_ENV;const SSG_FALLBACK_EXPORT_ERROR=`Pages with \`fallback\` enabled in \`getStaticPaths\` can not be exported. See more info here: https://nextjs.org/docs/messages/ssg-fallback-true-export`;exports.SSG_FALLBACK_EXPORT_ERROR=SSG_FALLBACK_EXPORT_ERROR;const ESLINT_DEFAULT_DIRS=['pages','components','lib','src/pages','src/components','src/lib'];exports.ESLINT_DEFAULT_DIRS=ESLINT_DEFAULT_DIRS;
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
@@ -13642,7 +13485,7 @@ throw new SerializableError(page,method,path,'`'+type+'`'+(type==='object'?` ("$
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.getRedirectStatus=getRedirectStatus;exports.normalizeRouteRegex=normalizeRouteRegex;exports.default=loadCustomRoutes;exports.allowedStatusCodes=void 0;var _url=__webpack_require__(8835);var pathToRegexp=_interopRequireWildcard(__webpack_require__(4329));var _escapeStringRegexp=_interopRequireDefault(__webpack_require__(7239));var _constants=__webpack_require__(7007);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}const allowedStatusCodes=new Set([301,302,303,307,308]);exports.allowedStatusCodes=allowedStatusCodes;const allowedHasTypes=new Set(['header','cookie','query','host']);const namedGroupsRegex=/\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g;function getRedirectStatus(route){return route.statusCode||(route.permanent?_constants.PERMANENT_REDIRECT_STATUS:_constants.TEMPORARY_REDIRECT_STATUS);}function normalizeRouteRegex(regex){// clean up un-necessary escaping from regex.source which turns / into \\/
+exports.__esModule=true;exports.getRedirectStatus=getRedirectStatus;exports.normalizeRouteRegex=normalizeRouteRegex;exports.default=loadCustomRoutes;exports.allowedStatusCodes=void 0;var _url=__webpack_require__(8835);var pathToRegexp=_interopRequireWildcard(__webpack_require__(4329));var _escapeStringRegexp=_interopRequireDefault(__webpack_require__(7239));var _constants=__webpack_require__(6885);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}const allowedStatusCodes=new Set([301,302,303,307,308]);exports.allowedStatusCodes=allowedStatusCodes;const allowedHasTypes=new Set(['header','cookie','query','host']);const namedGroupsRegex=/\(\?<([a-zA-Z][a-zA-Z0-9]*)>/g;function getRedirectStatus(route){return route.statusCode||(route.permanent?_constants.PERMANENT_REDIRECT_STATUS:_constants.TEMPORARY_REDIRECT_STATUS);}function normalizeRouteRegex(regex){// clean up un-necessary escaping from regex.source which turns / into \\/
 return regex.replace(/\\\//g,'/');}function checkRedirect(route){const invalidParts=[];let hadInvalidStatus=false;if(route.statusCode&&!allowedStatusCodes.has(route.statusCode)){hadInvalidStatus=true;invalidParts.push(`\`statusCode\` is not undefined or valid statusCode`);}if(typeof route.permanent!=='boolean'&&!route.statusCode){invalidParts.push(`\`permanent\` is not set to \`true\` or \`false\``);}return{invalidParts,hadInvalidStatus};}function checkHeader(route){const invalidParts=[];if(!Array.isArray(route.headers)){invalidParts.push('`headers` field must be an array');}else{for(const header of route.headers){if(!header||typeof header!=='object'){invalidParts.push("`headers` items must be object with { key: '', value: '' }");break;}if(typeof header.key!=='string'){invalidParts.push('`key` in header item must be string');break;}if(typeof header.value!=='string'){invalidParts.push('`value` in header item must be string');break;}}}return invalidParts;}function tryParsePath(route,handleUrl){const result={};let routePath=route;try{if(handleUrl){const parsedDestination=(0,_url.parse)(route,true);routePath=`${parsedDestination.pathname}${parsedDestination.hash||''}`;}// Make sure we can parse the source properly
 result.tokens=pathToRegexp.parse(routePath);pathToRegexp.tokensToRegexp(result.tokens);}catch(err){// If there is an error show our error link but still show original error or a formatted one if we can
 const errMatches=err.message.match(/at (\d{0,})/);if(errMatches){const position=parseInt(errMatches[1],10);console.error(`\nError parsing \`${route}\` `+`https://nextjs.org/docs/messages/invalid-route-source\n`+`Reason: ${err.message}\n\n`+`  ${routePath}\n`+`  ${new Array(position).fill(' ').join('')}^\n`);}else{console.error(`\nError parsing ${route} https://nextjs.org/docs/messages/invalid-route-source`,err);}result.error=true;}return result;}function checkCustomRoutes(routes,type){if(!Array.isArray(routes)){console.error(`Error: ${type}s must return an array, received ${typeof routes}.\n`+`See here for more info: https://nextjs.org/docs/messages/routes-must-be-array`);process.exit(1);}let numInvalidRoutes=0;let hadInvalidStatus=false;let hadInvalidHas=false;const allowedKeys=new Set(['source','basePath','locale','has']);if(type==='rewrite'){allowedKeys.add('destination');}if(type==='redirect'){allowedKeys.add('statusCode');allowedKeys.add('permanent');allowedKeys.add('destination');}if(type==='header'){allowedKeys.add('headers');}for(const route of routes){if(!route||typeof route!=='object'){console.error(`The route ${JSON.stringify(route)} is not a valid object with \`source\` and \`${type==='header'?'headers':'destination'}\``);numInvalidRoutes++;continue;}if(type==='rewrite'&&route.basePath===false&&!(route.destination.startsWith('http://')||route.destination.startsWith('https://'))){console.error(`The route ${route.source} rewrites urls outside of the basePath. Please use a destination that starts with \`http://\` or \`https://\` https://nextjs.org/docs/messages/invalid-external-rewrite`);numInvalidRoutes++;continue;}const keys=Object.keys(route);const invalidKeys=keys.filter(key=>!allowedKeys.has(key));const invalidParts=[];if(typeof route.basePath!=='undefined'&&route.basePath!==false){invalidParts.push('`basePath` must be undefined or false');}if(typeof route.locale!=='undefined'&&route.locale!==false){invalidParts.push('`locale` must be undefined or false');}if(typeof route.has!=='undefined'&&!Array.isArray(route.has)){invalidParts.push('`has` must be undefined or valid has object');hadInvalidHas=true;}else if(route.has){const invalidHasItems=[];for(const hasItem of route.has){let invalidHasParts=[];if(!allowedHasTypes.has(hasItem.type)){invalidHasParts.push(`invalid type "${hasItem.type}"`);}if(typeof hasItem.key!=='string'&&hasItem.type!=='host'){invalidHasParts.push(`invalid key "${hasItem.key}"`);}if(typeof hasItem.value!=='undefined'&&typeof hasItem.value!=='string'){invalidHasParts.push(`invalid value "${hasItem.value}"`);}if(typeof hasItem.value==='undefined'&&hasItem.type==='host'){invalidHasParts.push(`value is required for "host" type`);}if(invalidHasParts.length>0){invalidHasItems.push(`${invalidHasParts.join(', ')} for ${JSON.stringify(hasItem)}`);}}if(invalidHasItems.length>0){hadInvalidHas=true;const itemStr=`item${invalidHasItems.length===1?'':'s'}`;console.error(`Invalid \`has\` ${itemStr}:\n`+invalidHasItems.join('\n'));console.error();invalidParts.push(`invalid \`has\` ${itemStr} found`);}}if(!route.source){invalidParts.push('`source` is missing');}else if(typeof route.source!=='string'){invalidParts.push('`source` is not a string');}else if(!route.source.startsWith('/')){invalidParts.push('`source` does not start with /');}if(type==='header'){invalidParts.push(...checkHeader(route));}else{let _route=route;if(!_route.destination){invalidParts.push('`destination` is missing');}else if(typeof _route.destination!=='string'){invalidParts.push('`destination` is not a string');}else if(type==='rewrite'&&!_route.destination.match(/^(\/|https:\/\/|http:\/\/)/)){invalidParts.push('`destination` does not start with `/`, `http://`, or `https://`');}}if(type==='redirect'){const result=checkRedirect(route);hadInvalidStatus=hadInvalidStatus||result.hadInvalidStatus;invalidParts.push(...result.invalidParts);}let sourceTokens;if(typeof route.source==='string'&&route.source.startsWith('/')){// only show parse error if we didn't already show error
@@ -13658,7 +13501,7 @@ if(typeof route.destination==='string'){if(route.destination.startsWith('/')&&Ar
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.apiResolver=apiResolver;exports.parseBody=parseBody;exports.getCookieParser=getCookieParser;exports.sendStatusCode=sendStatusCode;exports.redirect=redirect;exports.sendData=sendData;exports.sendJson=sendJson;exports.tryGetPreviewData=tryGetPreviewData;exports.sendError=sendError;exports.setLazyProp=setLazyProp;exports.ApiError=exports.SYMBOL_PREVIEW_DATA=void 0;var _contentType=__webpack_require__(4415);var _rawBody=_interopRequireDefault(__webpack_require__(1045));var _stream=__webpack_require__(2413);var _utils=__webpack_require__(3937);var _cryptoUtils=__webpack_require__(5730);var _loadComponents=__webpack_require__(3254);var _sendPayload=__webpack_require__(4897);var _etag=_interopRequireDefault(__webpack_require__(5859));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}async function apiResolver(req,res,query,resolverModule,apiContext,propagateError){const apiReq=req;const apiRes=res;try{var _config$api,_config$api2;if(!resolverModule){res.statusCode=404;res.end('Not Found');return;}const config=resolverModule.config||{};const bodyParser=((_config$api=config.api)==null?void 0:_config$api.bodyParser)!==false;const externalResolver=((_config$api2=config.api)==null?void 0:_config$api2.externalResolver)||false;// Parsing of cookies
+exports.__esModule=true;exports.apiResolver=apiResolver;exports.parseBody=parseBody;exports.getCookieParser=getCookieParser;exports.sendStatusCode=sendStatusCode;exports.redirect=redirect;exports.sendData=sendData;exports.sendJson=sendJson;exports.tryGetPreviewData=tryGetPreviewData;exports.sendError=sendError;exports.setLazyProp=setLazyProp;exports.ApiError=exports.SYMBOL_PREVIEW_DATA=void 0;var _contentType=__webpack_require__(4415);var _rawBody=_interopRequireDefault(__webpack_require__(1045));var _stream=__webpack_require__(2413);var _utils=__webpack_require__(4755);var _cryptoUtils=__webpack_require__(5730);var _loadComponents=__webpack_require__(3254);var _sendPayload=__webpack_require__(4897);var _etag=_interopRequireDefault(__webpack_require__(5859));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}async function apiResolver(req,res,query,resolverModule,apiContext,propagateError){const apiReq=req;const apiRes=res;try{var _config$api,_config$api2;if(!resolverModule){res.statusCode=404;res.end('Not Found');return;}const config=resolverModule.config||{};const bodyParser=((_config$api=config.api)==null?void 0:_config$api.bodyParser)!==false;const externalResolver=((_config$api2=config.api)==null?void 0:_config$api2.externalResolver)||false;// Parsing of cookies
 setLazyProp({req:apiReq},'cookies',getCookieParser(req));// Parsing query string
 apiReq.query=query;// Parsing preview data
 setLazyProp({req:apiReq},'previewData',()=>tryGetPreviewData(req,res,apiContext));// Checking if preview mode is enabled
@@ -13763,10 +13606,10 @@ exports.__esModule=true;exports.normalizePathSep=normalizePathSep;exports.denorm
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.getFontDefinitionFromNetwork=getFontDefinitionFromNetwork;exports.getFontDefinitionFromManifest=getFontDefinitionFromManifest;var Log=_interopRequireWildcard(__webpack_require__(4332));function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}const https=__webpack_require__(7211);const CHROME_UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36';const IE_UA='Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko';function getFontForUA(url,UA){return new Promise((resolve,reject)=>{let rawData='';https.get(url,{headers:{'user-agent':UA}},res=>{res.on('data',chunk=>{rawData+=chunk;});res.on('end',()=>{resolve(rawData.toString('utf8'));});}).on('error',e=>{reject(e);});});}async function getFontDefinitionFromNetwork(url){let result='';/**
+exports.__esModule=true;exports.getFontDefinitionFromNetwork=getFontDefinitionFromNetwork;exports.getFontDefinitionFromManifest=getFontDefinitionFromManifest;var Log=_interopRequireWildcard(__webpack_require__(4332));var _constants=__webpack_require__(6885);function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var cache=new WeakMap();_getRequireWildcardCache=function(){return cache;};return cache;}function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj};}var cache=_getRequireWildcardCache();if(cache&&cache.has(obj)){return cache.get(obj);}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc);}else{newObj[key]=obj[key];}}}newObj.default=obj;if(cache){cache.set(obj,newObj);}return newObj;}const https=__webpack_require__(7211);const CHROME_UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36';const IE_UA='Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko';function isGoogleFont(url){return url.startsWith(_constants.GOOGLE_FONT_PROVIDER);}function getFontForUA(url,UA){return new Promise((resolve,reject)=>{let rawData='';https.get(url,{headers:{'user-agent':UA}},res=>{res.on('data',chunk=>{rawData+=chunk;});res.on('end',()=>{resolve(rawData.toString('utf8'));});}).on('error',e=>{reject(e);});});}async function getFontDefinitionFromNetwork(url){let result='';/**
    * The order of IE -> Chrome is important, other wise chrome starts loading woff1.
    * CSS cascading 🤷‍♂️.
-   */try{result+=await getFontForUA(url,IE_UA);result+=await getFontForUA(url,CHROME_UA);}catch(e){Log.warn(`Failed to download the stylesheet for ${url}. Skipped optimizing this font.`);return'';}return result;}function getFontDefinitionFromManifest(url,manifest){var _manifest$find;return((_manifest$find=manifest.find(font=>{if(font&&font.url===url){return true;}return false;}))==null?void 0:_manifest$find.content)||'';}
+   */try{if(isGoogleFont(url)){result+=await getFontForUA(url,IE_UA);}result+=await getFontForUA(url,CHROME_UA);}catch(e){Log.warn(`Failed to download the stylesheet for ${url}. Skipped optimizing this font.`);return'';}return result;}function getFontDefinitionFromManifest(url,manifest){var _manifest$find;return((_manifest$find=manifest.find(font=>{if(font&&font.url===url){return true;}return false;}))==null?void 0:_manifest$find.content)||'';}
 //# sourceMappingURL=font-utils.js.map
 
 /***/ }),
@@ -13784,7 +13627,7 @@ exports.__esModule=true;exports.getPageFiles=getPageFiles;var _normalizePagePath
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.interopDefault=interopDefault;exports.loadDefaultErrorComponents=loadDefaultErrorComponents;exports.loadComponents=loadComponents;var _constants=__webpack_require__(7007);var _path=__webpack_require__(5622);var _require=__webpack_require__(1672);function interopDefault(mod){return mod.default||mod;}async function loadDefaultErrorComponents(distDir){const Document=interopDefault(__webpack_require__(2400));const App=interopDefault(__webpack_require__(6381));const ComponentMod=__webpack_require__(900);const Component=interopDefault(ComponentMod);return{App,Document,Component,buildManifest:__webpack_require__(2308)((0,_path.join)(distDir,`fallback-${_constants.BUILD_MANIFEST}`)),reactLoadableManifest:{},ComponentMod};}async function loadComponents(distDir,pathname,serverless){if(serverless){const Component=await(0,_require.requirePage)(pathname,distDir,serverless);let{getStaticProps,getStaticPaths,getServerSideProps}=Component;getStaticProps=await getStaticProps;getStaticPaths=await getStaticPaths;getServerSideProps=await getServerSideProps;const pageConfig=(await Component.config)||{};return{Component,pageConfig,getStaticProps,getStaticPaths,getServerSideProps,ComponentMod:Component};}const DocumentMod=await(0,_require.requirePage)('/_document',distDir,serverless);const AppMod=await(0,_require.requirePage)('/_app',distDir,serverless);const ComponentMod=await(0,_require.requirePage)(pathname,distDir,serverless);const[buildManifest,reactLoadableManifest,Component,Document,App]=await Promise.all([__webpack_require__(2308)((0,_path.join)(distDir,_constants.BUILD_MANIFEST)),__webpack_require__(2308)((0,_path.join)(distDir,_constants.REACT_LOADABLE_MANIFEST)),interopDefault(ComponentMod),interopDefault(DocumentMod),interopDefault(AppMod)]);const{getServerSideProps,getStaticProps,getStaticPaths}=ComponentMod;return{App,Document,Component,buildManifest,reactLoadableManifest,pageConfig:ComponentMod.config||{},ComponentMod,getServerSideProps,getStaticProps,getStaticPaths};}
+exports.__esModule=true;exports.interopDefault=interopDefault;exports.loadDefaultErrorComponents=loadDefaultErrorComponents;exports.loadComponents=loadComponents;var _constants=__webpack_require__(6885);var _path=__webpack_require__(5622);var _require=__webpack_require__(1672);function interopDefault(mod){return mod.default||mod;}async function loadDefaultErrorComponents(distDir){const Document=interopDefault(__webpack_require__(8881));const App=interopDefault(__webpack_require__(3857));const ComponentMod=__webpack_require__(3359);const Component=interopDefault(ComponentMod);return{App,Document,Component,buildManifest:__webpack_require__(2308)((0,_path.join)(distDir,`fallback-${_constants.BUILD_MANIFEST}`)),reactLoadableManifest:{},ComponentMod};}async function loadComponents(distDir,pathname,serverless){if(serverless){const Component=await(0,_require.requirePage)(pathname,distDir,serverless);let{getStaticProps,getStaticPaths,getServerSideProps}=Component;getStaticProps=await getStaticProps;getStaticPaths=await getStaticPaths;getServerSideProps=await getServerSideProps;const pageConfig=(await Component.config)||{};return{Component,pageConfig,getStaticProps,getStaticPaths,getServerSideProps,ComponentMod:Component};}const DocumentMod=await(0,_require.requirePage)('/_document',distDir,serverless);const AppMod=await(0,_require.requirePage)('/_app',distDir,serverless);const ComponentMod=await(0,_require.requirePage)(pathname,distDir,serverless);const[buildManifest,reactLoadableManifest,Component,Document,App]=await Promise.all([__webpack_require__(2308)((0,_path.join)(distDir,_constants.BUILD_MANIFEST)),__webpack_require__(2308)((0,_path.join)(distDir,_constants.REACT_LOADABLE_MANIFEST)),interopDefault(ComponentMod),interopDefault(DocumentMod),interopDefault(AppMod)]);const{getServerSideProps,getStaticProps,getStaticPaths}=ComponentMod;return{App,Document,Component,buildManifest,reactLoadableManifest,pageConfig:ComponentMod.config||{},ComponentMod,getServerSideProps,getStaticProps,getStaticPaths};}
 //# sourceMappingURL=load-components.js.map
 
 /***/ }),
@@ -13824,8 +13667,7 @@ exports.__esModule=true;exports.default=optimize;async function optimize(html,co
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.renderToHTML=renderToHTML;var _react=_interopRequireDefault(__webpack_require__(7294));var _server=__webpack_require__(1152);var _log=__webpack_require__(4332);var _constants=__webpack_require__(2350);var _isSerializableProps=__webpack_require__(5570);var _amp=__webpack_require__(7845);var _ampContext=__webpack_require__(3367);var _constants2=__webpack_require__(7007);var _head=__webpack_require__(7947);var _headManagerContext=__webpack_require__(4287);var _loadable=_interopRequireDefault(__webpack_require__(5547));var _loadableContext=__webpack_require__(8903);var _mitt=_interopRequireDefault(__webpack_require__(7332));var _postProcess=_interopRequireDefault(__webpack_require__(7771));var _routerContext=__webpack_require__(1642);var _isDynamic=__webpack_require__(3288);var _utils=__webpack_require__(3937);var _apiUtils=__webpack_require__(5087);var _denormalizePagePath=__webpack_require__(9320);var _fontUtils=__webpack_require__(8677);var _normalizePagePath=__webpack_require__(9298);var _optimizeAmp=_interopRequireDefault(__webpack_require__(7503));var _loadCustomRoutes=__webpack_require__(3997);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function noRouter(){const message='No router instance found. you should only use "next/router" inside the client side of your app. https://nextjs.org/docs/messages/no-router-instance';throw new Error(message);}class ServerRouter{// TODO: Remove in the next major version, as this would mean the user is adding event listeners in server-side `render` method
-constructor(pathname,query,as,{isFallback},isReady,basePath,locale,locales,defaultLocale,domainLocales,isPreview,isLocaleDomain){this.route=void 0;this.pathname=void 0;this.query=void 0;this.asPath=void 0;this.basePath=void 0;this.events=void 0;this.isFallback=void 0;this.locale=void 0;this.isReady=void 0;this.locales=void 0;this.defaultLocale=void 0;this.domainLocales=void 0;this.isPreview=void 0;this.isLocaleDomain=void 0;this.route=pathname.replace(/\/$/,'')||'/';this.pathname=pathname;this.query=query;this.asPath=as;this.isFallback=isFallback;this.basePath=basePath;this.locale=locale;this.locales=locales;this.defaultLocale=defaultLocale;this.isReady=isReady;this.domainLocales=domainLocales;this.isPreview=!!isPreview;this.isLocaleDomain=!!isLocaleDomain;}push(){noRouter();}replace(){noRouter();}reload(){noRouter();}back(){noRouter();}prefetch(){noRouter();}beforePopState(){noRouter();}}ServerRouter.events=(0,_mitt.default)();function enhanceComponents(options,App,Component){// For backwards compatibility
+exports.__esModule=true;exports.renderToHTML=renderToHTML;var _react=_interopRequireDefault(__webpack_require__(7294));var _server=__webpack_require__(1152);var _log=__webpack_require__(4332);var _constants=__webpack_require__(2350);var _isSerializableProps=__webpack_require__(5570);var _amp=__webpack_require__(6393);var _ampContext=__webpack_require__(3398);var _constants2=__webpack_require__(6885);var _head=__webpack_require__(2775);var _headManagerContext=__webpack_require__(1165);var _loadable=_interopRequireDefault(__webpack_require__(7653));var _loadableContext=__webpack_require__(519);var _postProcess=_interopRequireDefault(__webpack_require__(8170));var _routerContext=__webpack_require__(6171);var _isDynamic=__webpack_require__(8073);var _utils=__webpack_require__(4755);var _apiUtils=__webpack_require__(5087);var _denormalizePagePath=__webpack_require__(9320);var _fontUtils=__webpack_require__(8677);var _normalizePagePath=__webpack_require__(9298);var _optimizeAmp=_interopRequireDefault(__webpack_require__(7503));var _loadCustomRoutes=__webpack_require__(3997);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function noRouter(){const message='No router instance found. you should only use "next/router" inside the client side of your app. https://nextjs.org/docs/messages/no-router-instance';throw new Error(message);}class ServerRouter{constructor(pathname,query,as,{isFallback},isReady,basePath,locale,locales,defaultLocale,domainLocales,isPreview,isLocaleDomain){this.route=void 0;this.pathname=void 0;this.query=void 0;this.asPath=void 0;this.basePath=void 0;this.events=void 0;this.isFallback=void 0;this.locale=void 0;this.isReady=void 0;this.locales=void 0;this.defaultLocale=void 0;this.domainLocales=void 0;this.isPreview=void 0;this.isLocaleDomain=void 0;this.route=pathname.replace(/\/$/,'')||'/';this.pathname=pathname;this.query=query;this.asPath=as;this.isFallback=isFallback;this.basePath=basePath;this.locale=locale;this.locales=locales;this.defaultLocale=defaultLocale;this.isReady=isReady;this.domainLocales=domainLocales;this.isPreview=!!isPreview;this.isLocaleDomain=!!isLocaleDomain;}push(){noRouter();}replace(){noRouter();}reload(){noRouter();}back(){noRouter();}prefetch(){noRouter();}beforePopState(){noRouter();}}function enhanceComponents(options,App,Component){// For backwards compatibility
 if(typeof options==='function'){return{App,Component:options(Component)};}return{App:options.enhanceApp?options.enhanceApp(App):App,Component:options.enhanceComponent?options.enhanceComponent(Component):Component};}function renderDocument(Document,{buildManifest,docComponentsRendered,props,docProps,pathname,query,buildId,canonicalBase,assetPrefix,runtimeConfig,nextExport,autoExport,isFallback,dynamicImportsIds,dangerousAsPath,err,dev,ampPath,ampState,inAmpMode,hybridAmp,dynamicImports,headTags,gsp,gssp,customServer,gip,appGip,unstable_runtimeJS,unstable_JsPreload,devOnlyCacheBusterQueryString,scriptLoader,locale,locales,defaultLocale,domainLocales,isPreview,disableOptimizedLoading}){return'<!DOCTYPE html>'+(0,_server.renderToStaticMarkup)(/*#__PURE__*/_react.default.createElement(_ampContext.AmpStateContext.Provider,{value:ampState},Document.renderDocument(Document,{__NEXT_DATA__:{props,// The result of getInitialProps
 page:pathname,// The rendered page
 query,// querystring parsed / passed by the user
@@ -13893,7 +13735,7 @@ html=html.replace(/&amp;amp=1/g,'&amp=1');}return html;}function errorToJSON(err
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.pageNotFoundError=pageNotFoundError;exports.getPagePath=getPagePath;exports.requirePage=requirePage;exports.requireFontManifest=requireFontManifest;var _fs=__webpack_require__(5747);var _path=__webpack_require__(5622);var _constants=__webpack_require__(7007);var _normalizePagePath=__webpack_require__(9298);var _normalizeLocalePath=__webpack_require__(1253);function pageNotFoundError(page){const err=new Error(`Cannot find module for page: ${page}`);err.code='ENOENT';return err;}function getPagePath(page,distDir,serverless,dev,locales){const serverBuildPath=(0,_path.join)(distDir,serverless&&!dev?_constants.SERVERLESS_DIRECTORY:_constants.SERVER_DIRECTORY);const pagesManifest=__webpack_require__(2308)((0,_path.join)(serverBuildPath,_constants.PAGES_MANIFEST));try{page=(0,_normalizePagePath.denormalizePagePath)((0,_normalizePagePath.normalizePagePath)(page));}catch(err){console.error(err);throw pageNotFoundError(page);}let pagePath=pagesManifest[page];if(!pagesManifest[page]&&locales){const manifestNoLocales={};for(const key of Object.keys(pagesManifest)){manifestNoLocales[(0,_normalizeLocalePath.normalizeLocalePath)(key,locales).pathname]=pagesManifest[key];}pagePath=manifestNoLocales[page];}if(!pagePath){throw pageNotFoundError(page);}return(0,_path.join)(serverBuildPath,pagePath);}function requirePage(page,distDir,serverless){const pagePath=getPagePath(page,distDir,serverless);if(pagePath.endsWith('.html')){return _fs.promises.readFile(pagePath,'utf8');}return __webpack_require__(2308)(pagePath);}function requireFontManifest(distDir,serverless){const serverBuildPath=(0,_path.join)(distDir,serverless?_constants.SERVERLESS_DIRECTORY:_constants.SERVER_DIRECTORY);const fontManifest=__webpack_require__(2308)((0,_path.join)(serverBuildPath,_constants.FONT_MANIFEST));return fontManifest;}
+exports.__esModule=true;exports.pageNotFoundError=pageNotFoundError;exports.getPagePath=getPagePath;exports.requirePage=requirePage;exports.requireFontManifest=requireFontManifest;var _fs=__webpack_require__(5747);var _path=__webpack_require__(5622);var _constants=__webpack_require__(6885);var _normalizePagePath=__webpack_require__(9298);var _normalizeLocalePath=__webpack_require__(6813);function pageNotFoundError(page){const err=new Error(`Cannot find module for page: ${page}`);err.code='ENOENT';return err;}function getPagePath(page,distDir,serverless,dev,locales){const serverBuildPath=(0,_path.join)(distDir,serverless&&!dev?_constants.SERVERLESS_DIRECTORY:_constants.SERVER_DIRECTORY);const pagesManifest=__webpack_require__(2308)((0,_path.join)(serverBuildPath,_constants.PAGES_MANIFEST));try{page=(0,_normalizePagePath.denormalizePagePath)((0,_normalizePagePath.normalizePagePath)(page));}catch(err){console.error(err);throw pageNotFoundError(page);}let pagePath=pagesManifest[page];if(!pagesManifest[page]&&locales){const manifestNoLocales={};for(const key of Object.keys(pagesManifest)){manifestNoLocales[(0,_normalizeLocalePath.normalizeLocalePath)(key,locales).pathname]=pagesManifest[key];}pagePath=manifestNoLocales[page];}if(!pagePath){throw pageNotFoundError(page);}return(0,_path.join)(serverBuildPath,pagePath);}function requirePage(page,distDir,serverless){const pagePath=getPagePath(page,distDir,serverless);if(pagePath.endsWith('.html')){return _fs.promises.readFile(pagePath,'utf8');}return __webpack_require__(2308)(pagePath);}function requireFontManifest(distDir,serverless){const serverBuildPath=(0,_path.join)(distDir,serverless?_constants.SERVERLESS_DIRECTORY:_constants.SERVER_DIRECTORY);const fontManifest=__webpack_require__(2308)((0,_path.join)(serverBuildPath,_constants.FONT_MANIFEST));return fontManifest;}
 //# sourceMappingURL=require.js.map
 
 /***/ }),
@@ -13902,7 +13744,7 @@ exports.__esModule=true;exports.pageNotFoundError=pageNotFoundError;exports.getP
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.setRevalidateHeaders=setRevalidateHeaders;exports.sendPayload=sendPayload;exports.sendEtagResponse=sendEtagResponse;var _utils=__webpack_require__(3937);var _etag=_interopRequireDefault(__webpack_require__(5859));var _fresh=_interopRequireDefault(__webpack_require__(6991));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function setRevalidateHeaders(res,options){if(options.private||options.stateful){if(options.private||!res.hasHeader('Cache-Control')){res.setHeader('Cache-Control',`private, no-cache, no-store, max-age=0, must-revalidate`);}}else if(typeof options.revalidate==='number'){if(options.revalidate<1){throw new Error(`invariant: invalid Cache-Control duration provided: ${options.revalidate} < 1`);}res.setHeader('Cache-Control',`s-maxage=${options.revalidate}, stale-while-revalidate`);}else if(options.revalidate===false){res.setHeader('Cache-Control',`s-maxage=31536000, stale-while-revalidate`);}}function sendPayload(req,res,payload,type,{generateEtags,poweredByHeader},options){if((0,_utils.isResSent)(res)){return;}if(poweredByHeader&&type==='html'){res.setHeader('X-Powered-By','Next.js');}const etag=generateEtags?(0,_etag.default)(payload):undefined;if(sendEtagResponse(req,res,etag)){return;}if(!res.getHeader('Content-Type')){res.setHeader('Content-Type',type==='json'?'application/json':'text/html; charset=utf-8');}res.setHeader('Content-Length',Buffer.byteLength(payload));if(options!=null){setRevalidateHeaders(res,options);}res.end(req.method==='HEAD'?null:payload);}function sendEtagResponse(req,res,etag){if(etag){/**
+exports.__esModule=true;exports.setRevalidateHeaders=setRevalidateHeaders;exports.sendPayload=sendPayload;exports.sendEtagResponse=sendEtagResponse;var _utils=__webpack_require__(4755);var _etag=_interopRequireDefault(__webpack_require__(5859));var _fresh=_interopRequireDefault(__webpack_require__(6991));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function setRevalidateHeaders(res,options){if(options.private||options.stateful){if(options.private||!res.hasHeader('Cache-Control')){res.setHeader('Cache-Control',`private, no-cache, no-store, max-age=0, must-revalidate`);}}else if(typeof options.revalidate==='number'){if(options.revalidate<1){throw new Error(`invariant: invalid Cache-Control duration provided: ${options.revalidate} < 1`);}res.setHeader('Cache-Control',`s-maxage=${options.revalidate}, stale-while-revalidate`);}else if(options.revalidate===false){res.setHeader('Cache-Control',`s-maxage=31536000, stale-while-revalidate`);}}function sendPayload(req,res,payload,type,{generateEtags,poweredByHeader},options){if((0,_utils.isResSent)(res)){return;}if(poweredByHeader&&type==='html'){res.setHeader('X-Powered-By','Next.js');}const etag=generateEtags?(0,_etag.default)(payload):undefined;if(sendEtagResponse(req,res,etag)){return;}if(!res.getHeader('Content-Type')){res.setHeader('Content-Type',type==='json'?'application/json':'text/html; charset=utf-8');}res.setHeader('Content-Length',Buffer.byteLength(payload));if(options!=null){setRevalidateHeaders(res,options);}res.end(req.method==='HEAD'?null:payload);}function sendEtagResponse(req,res,etag){if(etag){/**
      * The server generating a 304 response MUST generate any of the
      * following header fields that would have been sent in a 200 (OK)
      * response to the same request: Cache-Control, Content-Location, Date,
@@ -13916,7 +13758,7 @@ exports.__esModule=true;exports.setRevalidateHeaders=setRevalidateHeaders;export
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-exports.__esModule=true;exports.isBlockedPage=isBlockedPage;exports.cleanAmpPath=cleanAmpPath;var _constants=__webpack_require__(7007);function isBlockedPage(pathname){return _constants.BLOCKED_PAGES.includes(pathname);}function cleanAmpPath(pathname){if(pathname.match(/\?amp=(y|yes|true|1)/)){pathname=pathname.replace(/\?amp=(y|yes|true|1)&?/,'?');}if(pathname.match(/&amp=(y|yes|true|1)/)){pathname=pathname.replace(/&amp=(y|yes|true|1)/,'');}pathname=pathname.replace(/\?$/,'');return pathname;}
+exports.__esModule=true;exports.isBlockedPage=isBlockedPage;exports.cleanAmpPath=cleanAmpPath;var _constants=__webpack_require__(6885);function isBlockedPage(pathname){return _constants.BLOCKED_PAGES.includes(pathname);}function cleanAmpPath(pathname){if(pathname.match(/\?amp=(y|yes|true|1)/)){pathname=pathname.replace(/\?amp=(y|yes|true|1)&?/,'?');}if(pathname.match(/&amp=(y|yes|true|1)/)){pathname=pathname.replace(/&amp=(y|yes|true|1)/,'');}pathname=pathname.replace(/\?$/,'');return pathname;}
 //# sourceMappingURL=utils.js.map
 
 /***/ }),
@@ -17233,7 +17075,7 @@ module.exports = ReactPropTypesSecret;
 var bytes = __webpack_require__(9830)
 var createError = __webpack_require__(9009)
 var iconv = __webpack_require__(3776)
-var unpipe = __webpack_require__(8170)
+var unpipe = __webpack_require__(2585)
 
 /**
  * Module exports.
@@ -20698,7 +20540,7 @@ module.exports = hash;
 
 /***/ }),
 
-/***/ 6044:
+/***/ 4287:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -21134,7 +20976,7 @@ exports.default = void 0;
 
 var _stringHash = _interopRequireDefault(__webpack_require__(9887));
 
-var _stylesheet = _interopRequireDefault(__webpack_require__(6044));
+var _stylesheet = _interopRequireDefault(__webpack_require__(4287));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -21566,7 +21408,7 @@ function toIdentifier (str) {
 
 /***/ }),
 
-/***/ 8170:
+/***/ 2585:
 /***/ (function(module) {
 
 "use strict";
